@@ -1,69 +1,49 @@
-import { expect, test } from "@playwright/test";
-import { REGISTRATION_SELECTORS } from "../../src/selectors.js";
-import { faker } from "@faker-js/faker";
+import { test } from "@playwright/test";
+import { SignUpEnum } from "#src/enums/signup.js";
+import { FakerHelper } from "#src/helpers/faker.js";
+import { SignUpForm } from "#src/pageObjects/main/components/SignUpForm.js";
+import { MainPage } from "#src/pageObjects/main/MainPage.js";
 
 test.describe("Registration form - Re-enter Password field validation", () => {
-  const generateValidPassword = () => {
-    return `${faker.string.alpha({ length: 8, casing: "mixed" })}1`;
-  };
+  let mainPage;
+  let signUpForm;
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.locator(REGISTRATION_SELECTORS.signUpButton).click();
+    mainPage = new MainPage(page);
+    signUpForm = new SignUpForm(page);
+    await mainPage.openMainPage();
+    await mainPage.clickSignUpButton();
   });
 
-  test("should show error when Re-enter Password field is empty", async ({
-    page,
-  }) => {
-    const repeatPasswordInput = page.locator(
-      REGISTRATION_SELECTORS.repeatPasswordInput,
+  test("should show error when Re-enter Password field is empty", async () => {
+    await signUpForm.focusAndBlurInput(signUpForm.repeatPasswordInput);
+    await signUpForm.checkInputHasError(
+      signUpForm.repeatPasswordInput,
+      signUpForm.reEnterPasswordFieldErrorMessage,
+      SignUpEnum.REENTER_PASSWORD_REQUIRED,
     );
-    await repeatPasswordInput.focus();
-    await repeatPasswordInput.blur();
-
-    const errorMsg = repeatPasswordInput
-      .locator("..")
-      .locator(REGISTRATION_SELECTORS.errorMessage);
-    await expect(errorMsg).toBeVisible();
-    await expect(errorMsg).toContainText("Re-enter password required");
-    await expect(repeatPasswordInput).toHaveClass(/is-invalid/);
   });
 
-  test("should show error when passwords do not match", async ({ page }) => {
-    const password = generateValidPassword();
-    const repeatPassword = generateValidPassword();
+  test("should show error when passwords do not match", async () => {
+    const password = FakerHelper.generatePassword();
+    const repeatPassword = FakerHelper.generatePassword();
 
-    const passwordInput = page.locator(REGISTRATION_SELECTORS.passwordInput);
-    const repeatPasswordInput = page.locator(
-      REGISTRATION_SELECTORS.repeatPasswordInput,
+    await signUpForm.enterText(signUpForm.passwordInput, password);
+    await signUpForm.enterText(signUpForm.repeatPasswordInput, repeatPassword);
+    await signUpForm.focusAndBlurInput(signUpForm.repeatPasswordInput);
+    await signUpForm.checkInputHasError(
+      signUpForm.repeatPasswordInput,
+      signUpForm.reEnterPasswordFieldErrorMessage,
+      SignUpEnum.PASSWORDS_DO_NOT_MATCH,
     );
-
-    await passwordInput.fill(password);
-    await passwordInput.blur();
-    await repeatPasswordInput.fill(repeatPassword);
-    await repeatPasswordInput.blur();
-
-    const errorMsg = repeatPasswordInput
-      .locator("..")
-      .locator(REGISTRATION_SELECTORS.errorMessage);
-    await expect(errorMsg).toBeVisible();
-    await expect(errorMsg).toContainText("Passwords do not match");
-    await expect(repeatPasswordInput).toHaveClass(/is-invalid/);
   });
 
-  test("should accept matching passwords", async ({ page }) => {
-    const validPassword = generateValidPassword();
+  test("should accept matching passwords", async () => {
+    const validPassword = FakerHelper.generatePassword();
 
-    const passwordInput = page.locator(REGISTRATION_SELECTORS.passwordInput);
-    const repeatPasswordInput = page.locator(
-      REGISTRATION_SELECTORS.repeatPasswordInput,
-    );
-
-    await passwordInput.fill(validPassword);
-    await passwordInput.blur();
-    await repeatPasswordInput.fill(validPassword);
-    await repeatPasswordInput.blur();
-
-    await expect(repeatPasswordInput).toHaveClass(/ng-valid/);
+    await signUpForm.enterText(signUpForm.passwordInput, validPassword);
+    await signUpForm.enterText(signUpForm.repeatPasswordInput, validPassword);
+    await signUpForm.focusAndBlurInput(signUpForm.repeatPasswordInput);
+    await signUpForm.toHaveClass(signUpForm.repeatPasswordInput, /ng-valid/);
   });
 });
