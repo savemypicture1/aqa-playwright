@@ -52,10 +52,6 @@ export class BasePage {
     });
   }
 
-  getUrl() {
-    return this.page.url();
-  }
-
   async enterText(locator, text) {
     await test.step(`Enter ${text} to ${locator}`, async () => {
       const element = await this.isElementDisplayed(locator);
