@@ -1,4 +1,4 @@
-export const SignUpEnum = {
+export const SIGN_UP_TEXT = {
   TITLE: "Registration",
   NAME_REQUIRED: "Name required",
   NAME_INVALID: "Name is invalid",

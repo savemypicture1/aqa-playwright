@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-export const SignupResponseModel = z.object({
+export const SignupResponseSchema = z.object({
   status: z.string().min(1),
   data: z.object({
     userId: z.number().positive(),

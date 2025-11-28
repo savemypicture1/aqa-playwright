@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { SignUpEnum } from "#src/enums/signup.js";
+import { SIGN_UP_TEXT } from "#src/enums/signup.js";
 import { FakerHelper } from "#src/helpers/faker.js";
 import { SignUpForm } from "#src/pageObjects/main/components/SignUpForm.js";
 import { MainPage } from "#src/pageObjects/main/MainPage.js";
@@ -11,7 +11,7 @@ test.describe("Registration form - Re-enter Password field validation", () => {
   test.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
     signUpForm = new SignUpForm(page);
-    await mainPage.openMainPage();
+    await mainPage.openPage();
     await mainPage.clickSignUpButton();
   });
 
@@ -20,7 +20,7 @@ test.describe("Registration form - Re-enter Password field validation", () => {
     await signUpForm.checkInputHasError(
       signUpForm.repeatPasswordInput,
       signUpForm.reEnterPasswordFieldErrorMessage,
-      SignUpEnum.REENTER_PASSWORD_REQUIRED,
+      SIGN_UP_TEXT.REENTER_PASSWORD_REQUIRED,
     );
   });
 
@@ -34,7 +34,7 @@ test.describe("Registration form - Re-enter Password field validation", () => {
     await signUpForm.checkInputHasError(
       signUpForm.repeatPasswordInput,
       signUpForm.reEnterPasswordFieldErrorMessage,
-      SignUpEnum.PASSWORDS_DO_NOT_MATCH,
+      SIGN_UP_TEXT.PASSWORDS_DO_NOT_MATCH,
     );
   });
 

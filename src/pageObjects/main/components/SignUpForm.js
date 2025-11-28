@@ -79,4 +79,13 @@ export class SignUpForm extends BaseComponent {
   async waitForSignUpResponse(statusCode) {
     return await this.waitForApiResponse("/api/auth/signup", statusCode);
   }
+
+  async checkInputHasError(inputLocator, errorLocator, expectedErrorText) {
+    await test.step(`Check input "${inputLocator}" has error: "${expectedErrorText}"`, async () => {
+      const errorMessage = await this.getText(errorLocator);
+      expect(errorMessage).toBe(expectedErrorText);
+
+      await this.toHaveClass(inputLocator, /is-invalid/);
+    });
+  }
 }

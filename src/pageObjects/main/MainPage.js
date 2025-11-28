@@ -7,10 +7,6 @@ export class MainPage extends BasePage {
     super(page, "/");
   }
 
-  async openMainPage() {
-    await this.openPage(this._url);
-  }
-
   async clickSignUpButton() {
     await this.click(this.signUpButton);
   }

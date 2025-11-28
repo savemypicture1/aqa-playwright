@@ -6,12 +6,8 @@ export class BasePage {
     this._url = url;
   }
 
-  async openPage(url) {
-    await this.page.goto(url, { waitUntil: "domcontentloaded" });
-  }
-
-  async isOpened(url) {
-    await expect(this.page).toHaveURL(url);
+  async openPage() {
+    await this.page.goto(this._url, { waitUntil: "domcontentloaded" });
   }
 
   async isElementDisplayed(locator) {

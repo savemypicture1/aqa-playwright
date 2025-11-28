@@ -1,5 +1,5 @@
 import { test } from "@playwright/test";
-import { SignUpEnum } from "#src/enums/signup.js";
+import { SIGN_UP_TEXT } from "#src/enums/signup.js";
 import { SignUpForm } from "#src/pageObjects/main/components/SignUpForm.js";
 import { MainPage } from "#src/pageObjects/main/MainPage.js";
 import { WRONG_EMAILS } from "#src/wrongEmails.js";
@@ -11,7 +11,7 @@ test.describe("Registration form - Email field validation", () => {
   test.beforeEach(async ({ page }) => {
     mainPage = new MainPage(page);
     signUpForm = new SignUpForm(page);
-    await mainPage.openMainPage();
+    await mainPage.openPage();
     await mainPage.clickSignUpButton();
   });
 
@@ -20,7 +20,7 @@ test.describe("Registration form - Email field validation", () => {
     await signUpForm.checkInputHasError(
       signUpForm.emailInput,
       signUpForm.emailFieldErrorMessage,
-      SignUpEnum.EMAIL_REQUIRED,
+      SIGN_UP_TEXT.EMAIL_REQUIRED,
     );
   });
 
@@ -31,7 +31,7 @@ test.describe("Registration form - Email field validation", () => {
       await signUpForm.checkInputHasError(
         signUpForm.emailInput,
         signUpForm.emailFieldErrorMessage,
-        SignUpEnum.EMAIL_IS_INCORRECT,
+        SIGN_UP_TEXT.EMAIL_IS_INCORRECT,
       );
     }
   });

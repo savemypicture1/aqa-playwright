@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { FakerHelper } from "#src/helpers/faker.js";
-import { SignupResponseModel } from "#src/models/signupResponseModel.js";
+import { SignupResponseSchema } from "#src/models/signupResponse.js";
 import { GaragePage } from "#src/pageObjects/garage/GaragePage.js";
 import { SignUpForm } from "#src/pageObjects/main/components/SignUpForm.js";
 import { MainPage } from "#src/pageObjects/main/MainPage.js";
@@ -14,7 +14,7 @@ test.describe("Registration form - Register button", () => {
     mainPage = new MainPage(page);
     signUpForm = new SignUpForm(page);
     garagePage = new GaragePage(page);
-    await mainPage.openMainPage();
+    await mainPage.openPage();
     await mainPage.clickSignUpButton();
   });
 
@@ -70,11 +70,11 @@ test.describe("Registration form - Register button", () => {
     await test.step("Check Sign up response", async () => {
       const signupResponse = await loginResponsePromise;
       const signupData = await signupResponse.json();
-      const validatedSignupData = SignupResponseModel.parse(signupData);
+      const validatedSignupData = SignupResponseSchema.parse(signupData);
 
       expect(validatedSignupData.status).toBe("ok");
     });
 
-    await garagePage.isOpened(garagePage._url);
+    await expect(garagePage.page).toHaveURL(garagePage._url);
   });
 });
