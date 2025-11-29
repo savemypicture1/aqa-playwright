@@ -17,13 +17,6 @@ export class BasePage {
     return element;
   }
 
-  async assertElementHidden(locator) {
-    const element = this.page.locator(locator);
-    await expect(element).toBeHidden();
-
-    return element;
-  }
-
   async focusAndBlurInput(locator) {
     await test.step(`Focus and blur ${locator}`, async () => {
       const input = await this.assertElementVisible(locator);
