@@ -10,31 +10,23 @@ export class BasePage {
     await this.page.goto(this._url, { waitUntil: "domcontentloaded" });
   }
 
-  async isElementDisplayed(locator) {
+  async assertElementVisible(locator) {
     const element = this.page.locator(locator);
     await expect(element).toBeVisible();
 
     return element;
   }
 
-  async isElementNotDisplayed(locator) {
+  async assertElementHidden(locator) {
     const element = this.page.locator(locator);
     await expect(element).toBeHidden();
 
     return element;
   }
 
-  async getText(locator) {
-    return await test.step(`Get text from ${locator}`, async () => {
-      const element = await this.isElementDisplayed(locator);
-
-      return (await element.textContent()) ?? "";
-    });
-  }
-
   async focusAndBlurInput(locator) {
     await test.step(`Focus and blur ${locator}`, async () => {
-      const input = await this.isElementDisplayed(locator);
+      const input = await this.assertElementVisible(locator);
       await input.focus();
       await input.blur();
     });
@@ -42,7 +34,7 @@ export class BasePage {
 
   async click(locator) {
     await test.step(`Click ${locator}`, async () => {
-      const button = await this.isElementDisplayed(locator);
+      const button = await this.assertElementVisible(locator);
 
       await button.click();
     });
@@ -50,7 +42,7 @@ export class BasePage {
 
   async enterText(locator, text) {
     await test.step(`Enter ${text} to ${locator}`, async () => {
-      const element = await this.isElementDisplayed(locator);
+      const element = await this.assertElementVisible(locator);
 
       await element.fill(text);
 
@@ -60,8 +52,13 @@ export class BasePage {
     });
   }
 
+  async toHaveText(locator, expectedText) {
+    const element = await this.assertElementVisible(locator);
+    await expect(element).toHaveText(expectedText);
+  }
+
   async toHaveClass(locator, expectedClass) {
-    const element = await this.isElementDisplayed(locator);
+    const element = await this.assertElementVisible(locator);
     await expect(element).toHaveClass(expectedClass);
   }
 
@@ -70,6 +67,7 @@ export class BasePage {
       (res) =>
         res.url().endsWith(urlPattern) && res.status() === expectedStatus,
     );
+
     return response;
   }
 }

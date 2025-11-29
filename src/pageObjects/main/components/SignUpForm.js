@@ -36,14 +36,14 @@ export class SignUpForm extends BaseComponent {
   async areElementsDisplayed() {
     await test.step("Check all Sign up form elements are displayed", async () => {
       await Promise.all([
-        this.isElementDisplayed(this.modalTitle),
-        this.isElementDisplayed(this.closeButton),
-        this.isElementDisplayed(this.nameInput),
-        this.isElementDisplayed(this.lastNameInput),
-        this.isElementDisplayed(this.emailInput),
-        this.isElementDisplayed(this.passwordInput),
-        this.isElementDisplayed(this.repeatPasswordInput),
-        this.isElementDisplayed(this.registerButton),
+        this.assertElementVisible(this.modalTitle),
+        this.assertElementVisible(this.closeButton),
+        this.assertElementVisible(this.nameInput),
+        this.assertElementVisible(this.lastNameInput),
+        this.assertElementVisible(this.emailInput),
+        this.assertElementVisible(this.passwordInput),
+        this.assertElementVisible(this.repeatPasswordInput),
+        this.assertElementVisible(this.registerButton),
       ]);
     });
   }
@@ -60,14 +60,14 @@ export class SignUpForm extends BaseComponent {
 
   async checkRegisterButtonIsDisabled() {
     await test.step("Check Register button is disabled", async () => {
-      const element = await this.isElementDisplayed(this.registerButton);
+      const element = await this.assertElementVisible(this.registerButton);
       await expect(element).toBeDisabled();
     });
   }
 
   async checkRegisterButtonIsEnabled() {
     await test.step("Check Register button is enabled", async () => {
-      const element = await this.isElementDisplayed(this.registerButton);
+      const element = await this.assertElementVisible(this.registerButton);
       await expect(element).toBeEnabled();
     });
   }
@@ -82,9 +82,7 @@ export class SignUpForm extends BaseComponent {
 
   async checkInputHasError(inputLocator, errorLocator, expectedErrorText) {
     await test.step(`Check input "${inputLocator}" has error: "${expectedErrorText}"`, async () => {
-      const errorMessage = await this.getText(errorLocator);
-      expect(errorMessage).toBe(expectedErrorText);
-
+      await this.toHaveText(errorLocator, expectedErrorText);
       await this.toHaveClass(inputLocator, /is-invalid/);
     });
   }
