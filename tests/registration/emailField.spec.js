@@ -1,42 +1,38 @@
-import { expect, test } from "@playwright/test";
-import { REGISTRATION_SELECTORS } from "../../src/selectors.js";
-import { WRONG_EMAILS } from "../../src/wrongEmails.js";
+import { test } from "@playwright/test";
+import { SIGN_UP_TEXT } from "#src/enums/signup.js";
+import { SignUpForm } from "#src/pageObjects/main/components/SignUpForm.js";
+import { MainPage } from "#src/pageObjects/main/MainPage.js";
+import { WRONG_EMAILS } from "#src/wrongEmails.js";
 
 test.describe("Registration form - Email field validation", () => {
+  let mainPage;
+  let signUpForm;
+
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.locator(REGISTRATION_SELECTORS.signUpButton).click();
+    mainPage = new MainPage(page);
+    signUpForm = new SignUpForm(page);
+    await mainPage.openPage();
+    await mainPage.clickSignUpButton();
   });
 
-  test("should show error when Email field is empty", async ({ page }) => {
-    const emailInput = page.locator(REGISTRATION_SELECTORS.emailInput);
-    await emailInput.focus();
-    await emailInput.blur();
-
-    const errorMessage = emailInput
-      .locator("..")
-      .locator(REGISTRATION_SELECTORS.errorMessage);
-    await expect(errorMessage).toBeVisible();
-    await expect(errorMessage).toContainText("Email required");
-    await expect(emailInput).toHaveClass(/is-invalid/);
+  test("should show error when Email field is empty", async () => {
+    await signUpForm.focusAndBlurInput(signUpForm.emailInput);
+    await signUpForm.checkInputHasError(
+      signUpForm.emailInput,
+      signUpForm.emailFieldErrorMessage,
+      SIGN_UP_TEXT.EMAIL_REQUIRED,
+    );
   });
 
-  test("should show error for all incorrect email formats", async ({
-    page,
-  }) => {
-    const emailInput = page.locator(REGISTRATION_SELECTORS.emailInput);
-
+  test("should show error for all incorrect email formats", async () => {
     for (const email of WRONG_EMAILS) {
-      //   await emailInput.clear();
-      await emailInput.fill(email);
-      await emailInput.blur();
-
-      const errorMessage = emailInput
-        .locator("..")
-        .locator(REGISTRATION_SELECTORS.errorMessage);
-      await expect(errorMessage).toBeVisible();
-      await expect(errorMessage).toContainText("Email is incorrect");
-      await expect(emailInput).toHaveClass(/is-invalid/);
+      await signUpForm.enterText(signUpForm.emailInput, email);
+      await signUpForm.focusAndBlurInput(signUpForm.emailInput);
+      await signUpForm.checkInputHasError(
+        signUpForm.emailInput,
+        signUpForm.emailFieldErrorMessage,
+        SIGN_UP_TEXT.EMAIL_IS_INCORRECT,
+      );
     }
   });
 });
