@@ -1,34 +1,21 @@
-import { expect, test } from "@playwright/test";
-import { REGISTRATION_SELECTORS } from "../../src/selectors.js";
+import { test } from "@playwright/test";
+import { SIGN_UP_TEXT } from "#src/enums/signup.js";
+import { SignUpForm } from "#src/pageObjects/main/components/SignUpForm.js";
+import { MainPage } from "#src/pageObjects/main/MainPage.js";
 
 test.describe("Registration form - Base UI", () => {
+  let mainPage;
+  let signUpForm;
+
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.locator(REGISTRATION_SELECTORS.signUpButton).click();
+    mainPage = new MainPage(page);
+    signUpForm = new SignUpForm(page);
+    await mainPage.openPage();
+    await mainPage.clickSignUpButton();
   });
 
-  test("should display registration form with all required fields", async ({
-    page,
-  }) => {
-    await expect(page.locator(REGISTRATION_SELECTORS.modalTitle)).toContainText(
-      "Registration",
-    );
-    await expect(
-      page.locator(REGISTRATION_SELECTORS.closeButton),
-    ).toBeVisible();
-    await expect(page.locator(REGISTRATION_SELECTORS.nameInput)).toBeVisible();
-    await expect(
-      page.locator(REGISTRATION_SELECTORS.lastNameInput),
-    ).toBeVisible();
-    await expect(page.locator(REGISTRATION_SELECTORS.emailInput)).toBeVisible();
-    await expect(
-      page.locator(REGISTRATION_SELECTORS.passwordInput),
-    ).toBeVisible();
-    await expect(
-      page.locator(REGISTRATION_SELECTORS.repeatPasswordInput),
-    ).toBeVisible();
-    await expect(
-      page.locator(REGISTRATION_SELECTORS.registerButton),
-    ).toBeVisible();
+  test("should display registration form with all required fields", async () => {
+    await signUpForm.areElementsDisplayed();
+    await signUpForm.checkModalTitle(SIGN_UP_TEXT.TITLE);
   });
 });

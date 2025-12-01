@@ -1,84 +1,80 @@
 import { expect, test } from "@playwright/test";
-import { REGISTRATION_SELECTORS } from "../../src/selectors.js";
-import { faker } from "@faker-js/faker";
+import { FakerHelper } from "#src/helpers/faker.js";
+import { SignupResponseSchema } from "#src/models/signupResponse.js";
+import { GaragePage } from "#src/pageObjects/garage/GaragePage.js";
+import { SignUpForm } from "#src/pageObjects/main/components/SignUpForm.js";
+import { MainPage } from "#src/pageObjects/main/MainPage.js";
 
 test.describe("Registration form - Register button", () => {
-  const generateValidPassword = () => {
-    return `${faker.string.alpha({ length: 8, casing: "mixed" })}1`;
-  };
+  let mainPage;
+  let signUpForm;
+  let garagePage;
 
   test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    await page.locator(REGISTRATION_SELECTORS.signUpButton).click();
+    mainPage = new MainPage(page);
+    signUpForm = new SignUpForm(page);
+    garagePage = new GaragePage(page);
+    await mainPage.openPage();
+    await mainPage.clickSignUpButton();
   });
 
-  test("should be disabled when form has invalid data", async ({ page }) => {
-    const validName = faker.person.firstName();
-    const validLastName = faker.person.lastName();
-    const invalidEmail = "invalid-email";
-    const validPassword = generateValidPassword();
+  test("should be disabled when form has invalid data", async () => {
+    const validLastName = FakerHelper.generateLastName();
+    const validName = FakerHelper.generateName();
+    const invalidEmail = FakerHelper.getRandomWrongEmail();
+    const validPassword = FakerHelper.generatePassword();
 
-    await page.locator(REGISTRATION_SELECTORS.nameInput).fill(validName);
-    await page
-      .locator(REGISTRATION_SELECTORS.lastNameInput)
-      .fill(validLastName);
-    await page.locator(REGISTRATION_SELECTORS.emailInput).fill(invalidEmail);
-    await page
-      .locator(REGISTRATION_SELECTORS.passwordInput)
-      .fill(validPassword);
-    await page
-      .locator(REGISTRATION_SELECTORS.repeatPasswordInput)
-      .fill(validPassword);
-
-    await expect(
-      page.locator(REGISTRATION_SELECTORS.registerButton),
-    ).toBeDisabled();
+    await signUpForm.fillSignUpForm({
+      name: validName,
+      lastName: validLastName,
+      email: invalidEmail,
+      password: validPassword,
+      repeatPassword: validPassword,
+    });
+    await signUpForm.checkRegisterButtonIsDisabled();
   });
 
-  test("should be enabled when all fields are valid", async ({ page }) => {
-    const validName = faker.person.firstName();
-    const validLastName = faker.person.lastName();
-    const validEmail = `aqa-${faker.internet.email()}`;
-    const validPassword = generateValidPassword();
+  test("should be enabled when all fields are valid", async () => {
+    const validLastName = FakerHelper.generateLastName();
+    const validName = FakerHelper.generateName();
+    const validEmail = FakerHelper.generateEmail();
+    const validPassword = FakerHelper.generatePassword();
 
-    await page.locator(REGISTRATION_SELECTORS.nameInput).fill(validName);
-    await page
-      .locator(REGISTRATION_SELECTORS.lastNameInput)
-      .fill(validLastName);
-    await page.locator(REGISTRATION_SELECTORS.emailInput).fill(validEmail);
-    await page
-      .locator(REGISTRATION_SELECTORS.passwordInput)
-      .fill(validPassword);
-    await page
-      .locator(REGISTRATION_SELECTORS.repeatPasswordInput)
-      .fill(validPassword);
-
-    await expect(
-      page.locator(REGISTRATION_SELECTORS.registerButton),
-    ).toBeEnabled();
+    await signUpForm.fillSignUpForm({
+      name: validName,
+      lastName: validLastName,
+      email: validEmail,
+      password: validPassword,
+      repeatPassword: validPassword,
+    });
+    await signUpForm.checkRegisterButtonIsEnabled();
   });
 
-  test("should create new user when clicked Register buttton with valid data", async ({
-    page,
-  }) => {
-    const validName = faker.person.firstName();
-    const validLastName = faker.person.lastName();
-    const validEmail = `aqa-${faker.internet.email()}`;
-    const validPassword = generateValidPassword();
+  test("should create new user when clicked Register buttton with valid data", async () => {
+    const validLastName = FakerHelper.generateLastName();
+    const validName = FakerHelper.generateName();
+    const validEmail = FakerHelper.generateEmail();
+    const validPassword = FakerHelper.generatePassword();
 
-    await page.locator(REGISTRATION_SELECTORS.nameInput).fill(validName);
-    await page
-      .locator(REGISTRATION_SELECTORS.lastNameInput)
-      .fill(validLastName);
-    await page.locator(REGISTRATION_SELECTORS.emailInput).fill(validEmail);
-    await page
-      .locator(REGISTRATION_SELECTORS.passwordInput)
-      .fill(validPassword);
-    await page
-      .locator(REGISTRATION_SELECTORS.repeatPasswordInput)
-      .fill(validPassword);
-    await page.locator(REGISTRATION_SELECTORS.registerButton).click();
+    await signUpForm.fillSignUpForm({
+      name: validName,
+      lastName: validLastName,
+      email: validEmail,
+      password: validPassword,
+      repeatPassword: validPassword,
+    });
+    const loginResponsePromise = signUpForm.waitForSignUpResponse(201);
 
-    await expect(page).toHaveURL(/.*\/panel\/garage/);
+    await signUpForm.clickRegisterButton();
+
+    await test.step("Check Sign up response", async () => {
+      const signupResponse = await loginResponsePromise;
+      const signupData = await signupResponse.json();
+      const validatedSignupData = SignupResponseSchema.parse(signupData);
+
+      expect(validatedSignupData.status).toBe("ok");
+    });
+
+    await expect(garagePage.page).toHaveURL(garagePage._url);
   });
 });
