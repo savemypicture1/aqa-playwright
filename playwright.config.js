@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { config } from "./config/config.js";
 
 export default defineConfig({
   testDir: "./tests",
@@ -12,10 +13,10 @@ export default defineConfig({
   ],
   timeout: 60000,
   use: {
-    baseURL: "https://qauto.forstudy.space/",
+    baseURL: config.baseURL,
     httpCredentials: {
-      username: "guest",
-      password: "welcome2qauto",
+      username: config.httpCredentials.username,
+      password: config.httpCredentials.password,
     },
     trace: "retain-on-failure",
     screenshot: {
