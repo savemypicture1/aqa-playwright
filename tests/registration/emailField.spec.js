@@ -26,7 +26,7 @@ test.describe("Registration form - Email field validation", () => {
 
   test("should show error for all incorrect email formats", async () => {
     for (const email of WRONG_EMAILS) {
-      await signUpForm.enterText(signUpForm.emailInput, email);
+      await signUpForm.fillEmailField(email);
       await signUpForm.focusAndBlurInput(signUpForm.emailInput);
       await signUpForm.checkInputHasError(
         signUpForm.emailInput,

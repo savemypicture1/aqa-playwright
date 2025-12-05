@@ -2,78 +2,94 @@ import { expect, test } from "@playwright/test";
 import { BaseComponent } from "#src/pageObjects/BaseComponent.js";
 
 export class SignUpForm extends BaseComponent {
-  modalTitle = ".modal-title";
-  closeButton = ".close";
-  nameInput = "#signupName";
-  lastNameInput = "#signupLastName";
-  emailInput = "#signupEmail";
-  passwordInput = "#signupPassword";
-  repeatPasswordInput = "#signupRepeatPassword";
-  registerButton = ".modal-footer button";
-  nameFieldErrorMessage =
-    ".modal-body .form-group:nth-child(1) .invalid-feedback p";
-  lastNameFieldErrorMessage =
-    ".modal-body .form-group:nth-child(2) .invalid-feedback p";
-  emailFieldErrorMessage =
-    ".modal-body .form-group:nth-child(3) .invalid-feedback p";
-  passwordFieldErrorMessage =
-    ".modal-body .form-group:nth-child(4) .invalid-feedback p";
-  reEnterPasswordFieldErrorMessage =
-    ".modal-body .form-group:nth-child(5) .invalid-feedback p";
+  modalTitle = this.page.locator(".modal-title");
+  closeButton = this.page.locator(".close");
+  sigUpForm = this.page.locator(".modal-body");
+  nameInput = this.sigUpForm.locator("#signupName");
+  lastNameInput = this.sigUpForm.locator("#signupLastName");
+  emailInput = this.sigUpForm.locator("#signupEmail");
+  passwordInput = this.sigUpForm.locator("#signupPassword");
+  repeatPasswordInput = this.sigUpForm.locator("#signupRepeatPassword");
+  registerButton = this.page.locator(".modal-footer button");
+  nameFieldErrorMessage = this.page.locator(
+    ".modal-body .form-group:nth-child(1) .invalid-feedback p",
+  );
+  lastNameFieldErrorMessage = this.page.locator(
+    ".modal-body .form-group:nth-child(2) .invalid-feedback p",
+  );
+  emailFieldErrorMessage = this.page.locator(
+    ".modal-body .form-group:nth-child(3) .invalid-feedback p",
+  );
+  passwordFieldErrorMessage = this.page.locator(
+    ".modal-body .form-group:nth-child(4) .invalid-feedback p",
+  );
+  reEnterPasswordFieldErrorMessage = this.page.locator(
+    ".modal-body .form-group:nth-child(5) .invalid-feedback p",
+  );
 
   constructor(page) {
     super(page);
   }
 
-  async checkModalTitle(expectedText) {
-    await test.step(`Check modal title contains "${expectedText}"`, async () => {
-      await expect(this.page.locator(this.modalTitle)).toContainText(
-        expectedText,
-      );
-    });
-  }
-
   async areElementsDisplayed() {
     await test.step("Check all Sign up form elements are displayed", async () => {
       await Promise.all([
-        this.assertElementVisible(this.modalTitle),
-        this.assertElementVisible(this.closeButton),
-        this.assertElementVisible(this.nameInput),
-        this.assertElementVisible(this.lastNameInput),
-        this.assertElementVisible(this.emailInput),
-        this.assertElementVisible(this.passwordInput),
-        this.assertElementVisible(this.repeatPasswordInput),
-        this.assertElementVisible(this.registerButton),
+        expect(this.modalTitle).toBeVisible(),
+        expect(this.closeButton).toBeVisible(),
+        expect(this.nameInput).toBeVisible(),
+        expect(this.lastNameInput).toBeVisible(),
+        expect(this.emailInput).toBeVisible(),
+        expect(this.passwordInput).toBeVisible(),
+        expect(this.repeatPasswordInput).toBeVisible(),
+        expect(this.registerButton).toBeVisible(),
       ]);
+    });
+  }
+
+  async fillNameField(name) {
+    await test.step("Fill Name field", async () => {
+      await this.nameInput.fill(name);
+    });
+  }
+
+  async fillLastNameField(lastName) {
+    await test.step("Fill Last Name field", async () => {
+      await this.lastNameInput.fill(lastName);
+    });
+  }
+
+  async fillEmailField(email) {
+    await test.step("Fill Email field", async () => {
+      await this.emailInput.fill(email);
+    });
+  }
+
+  async fillPasswordField(password) {
+    await test.step("Fill Password field", async () => {
+      await this.passwordInput.fill(password);
+    });
+  }
+
+  async fillRepeatPasswordField(repeatPassword) {
+    await test.step("Fill Repeat Password field", async () => {
+      await this.repeatPasswordInput.fill(repeatPassword);
     });
   }
 
   async fillSignUpForm({ name, lastName, email, password, repeatPassword }) {
     await test.step("Fill Sign up form", async () => {
-      await this.enterText(this.nameInput, name);
-      await this.enterText(this.lastNameInput, lastName);
-      await this.enterText(this.emailInput, email);
-      await this.enterText(this.passwordInput, password);
-      await this.enterText(this.repeatPasswordInput, repeatPassword);
+      await this.fillNameField(name);
+      await this.fillLastNameField(lastName);
+      await this.fillEmailField(email);
+      await this.fillPasswordField(password);
+      await this.fillRepeatPasswordField(repeatPassword);
     });
   }
 
-  async checkRegisterButtonIsDisabled() {
-    await test.step("Check Register button is disabled", async () => {
-      const element = await this.assertElementVisible(this.registerButton);
-      await expect(element).toBeDisabled();
+  async clickSignInButton() {
+    await test.step("Click Register button", async () => {
+      await this.registerButton.click();
     });
-  }
-
-  async checkRegisterButtonIsEnabled() {
-    await test.step("Check Register button is enabled", async () => {
-      const element = await this.assertElementVisible(this.registerButton);
-      await expect(element).toBeEnabled();
-    });
-  }
-
-  async clickRegisterButton() {
-    await this.click(this.registerButton);
   }
 
   async waitForSignUpResponse(statusCode) {
@@ -82,8 +98,8 @@ export class SignUpForm extends BaseComponent {
 
   async checkInputHasError(inputLocator, errorLocator, expectedErrorText) {
     await test.step(`Check input "${inputLocator}" has error: "${expectedErrorText}"`, async () => {
-      await this.toHaveText(errorLocator, expectedErrorText);
-      await this.toHaveClass(inputLocator, /is-invalid/);
+      await expect(errorLocator).toHaveText(expectedErrorText);
+      await expect(inputLocator).toHaveClass(/is-invalid/);
     });
   }
 }

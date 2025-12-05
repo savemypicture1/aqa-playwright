@@ -8,4 +8,9 @@ export const config = {
     username: process.env.HTTP_CREDENTIALS_USERNAME,
     password: process.env.HTTP_CREDENTIALS_PASSWORD,
   },
+  userCredentials: {
+    email: process.env.USER_EMAIL,
+    password: process.env.USER_PASSWORD,
+  },
+  userStatePath: "state/userStorageState.json",
 };

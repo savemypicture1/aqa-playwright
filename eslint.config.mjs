@@ -5,6 +5,15 @@ import promise from "eslint-plugin-promise";
 import globals from "globals";
 
 export default [
+  {
+    ignores: [
+      "node_modules/",
+      "playwright-report/",
+      "test-results/",
+      "state/",
+      "*.config.js",
+    ],
+  },
   js.configs.recommended,
   {
     files: ["**/*.{js,mjs,cjs}"],

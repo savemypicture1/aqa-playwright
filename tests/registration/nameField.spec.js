@@ -25,7 +25,7 @@ test.describe("Registration form - Name field validation", () => {
   });
 
   test("should show error for invalid characters in Name", async () => {
-    await signUpForm.enterText(signUpForm.nameInput, "123");
+    await signUpForm.fillNameField("123");
     await signUpForm.focusAndBlurInput(signUpForm.nameInput);
     await signUpForm.checkInputHasError(
       signUpForm.nameInput,
@@ -37,7 +37,7 @@ test.describe("Registration form - Name field validation", () => {
   test("should show error when Name is less than 2 characters", async () => {
     const shortName = FakerHelper.generateString(1);
 
-    await signUpForm.enterText(signUpForm.nameInput, shortName);
+    await signUpForm.fillNameField(shortName);
     await signUpForm.focusAndBlurInput(signUpForm.nameInput);
     await signUpForm.checkInputHasError(
       signUpForm.nameInput,
@@ -49,7 +49,7 @@ test.describe("Registration form - Name field validation", () => {
   test("should show error when Name is more than 20 characters", async () => {
     const longName = FakerHelper.generateString(21);
 
-    await signUpForm.enterText(signUpForm.nameInput, longName);
+    await signUpForm.fillNameField(longName);
     await signUpForm.focusAndBlurInput(signUpForm.nameInput);
     await signUpForm.checkInputHasError(
       signUpForm.nameInput,
