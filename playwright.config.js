@@ -30,11 +30,18 @@ export default defineConfig({
   },
   projects: [
     {
+      name: "setup",
+      testMatch: /setup\/.*\.setup\.js/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
       name: "chromium",
+      dependencies: ["setup"],
       use: { ...devices["Desktop Chrome"] },
     },
     {
       name: "firefox",
+      dependencies: ["setup"],
       use: { ...devices["Desktop Firefox"] },
     },
   ],

@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { SIGN_UP_TEXT } from "#src/enums/signup.js";
 import { SignUpForm } from "#src/pageObjects/main/components/SignUpForm.js";
 import { MainPage } from "#src/pageObjects/main/MainPage.js";
@@ -16,6 +16,6 @@ test.describe("Registration form - Base UI", () => {
 
   test("should display registration form with all required fields", async () => {
     await signUpForm.areElementsDisplayed();
-    await signUpForm.checkModalTitle(SIGN_UP_TEXT.TITLE);
+    await expect(signUpForm.modalTitle).toContainText(SIGN_UP_TEXT.TITLE);
   });
 });

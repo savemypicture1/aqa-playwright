@@ -31,7 +31,7 @@ test.describe("Registration form - Register button", () => {
       password: validPassword,
       repeatPassword: validPassword,
     });
-    await signUpForm.checkRegisterButtonIsDisabled();
+    await expect(signUpForm.registerButton).toBeDisabled();
   });
 
   test("should be enabled when all fields are valid", async () => {
@@ -47,7 +47,7 @@ test.describe("Registration form - Register button", () => {
       password: validPassword,
       repeatPassword: validPassword,
     });
-    await signUpForm.checkRegisterButtonIsEnabled();
+    await expect(signUpForm.registerButton).toBeEnabled();
   });
 
   test("should create new user when clicked Register buttton with valid data", async () => {
@@ -63,12 +63,12 @@ test.describe("Registration form - Register button", () => {
       password: validPassword,
       repeatPassword: validPassword,
     });
-    const loginResponsePromise = signUpForm.waitForSignUpResponse(201);
+    const signUpResponsePromise = signUpForm.waitForSignUpResponse(201);
 
     await signUpForm.clickRegisterButton();
 
     await test.step("Check Sign up response", async () => {
-      const signupResponse = await loginResponsePromise;
+      const signupResponse = await signUpResponsePromise;
       const signupData = await signupResponse.json();
       const validatedSignupData = SignupResponseSchema.parse(signupData);
 
