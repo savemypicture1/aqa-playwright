@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { SIGN_UP_TEXT } from "#src/enums/signup.js";
 import { FakerHelper } from "#src/helpers/faker.js";
 import { SignUpForm } from "#src/pageObjects/main/components/SignUpForm.js";
@@ -28,8 +28,8 @@ test.describe("Registration form - Re-enter Password field validation", () => {
     const password = FakerHelper.generatePassword();
     const repeatPassword = FakerHelper.generatePassword();
 
-    await signUpForm.enterText(signUpForm.passwordInput, password);
-    await signUpForm.enterText(signUpForm.repeatPasswordInput, repeatPassword);
+    await signUpForm.fillPasswordField(password);
+    await signUpForm.fillRepeatPasswordField(repeatPassword);
     await signUpForm.focusAndBlurInput(signUpForm.repeatPasswordInput);
     await signUpForm.checkInputHasError(
       signUpForm.repeatPasswordInput,
@@ -41,9 +41,9 @@ test.describe("Registration form - Re-enter Password field validation", () => {
   test("should accept matching passwords", async () => {
     const validPassword = FakerHelper.generatePassword();
 
-    await signUpForm.enterText(signUpForm.passwordInput, validPassword);
-    await signUpForm.enterText(signUpForm.repeatPasswordInput, validPassword);
+    await signUpForm.fillPasswordField(validPassword);
+    await signUpForm.fillRepeatPasswordField(validPassword);
     await signUpForm.focusAndBlurInput(signUpForm.repeatPasswordInput);
-    await signUpForm.toHaveClass(signUpForm.repeatPasswordInput, /ng-valid/);
+    await expect(signUpForm.repeatPasswordInput).toHaveClass(/ng-valid/);
   });
 });
