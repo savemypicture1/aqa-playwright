@@ -1,4 +1,4 @@
-import { test as setup } from "@playwright/test";
+import { expect, test as setup } from "@playwright/test";
 import { config } from "../../config/config.js";
 import { Header } from "#src/pageObjects/main/components/Header.js";
 import { SignInForm } from "#src/pageObjects/main/components/SignInForm.js";
@@ -18,6 +18,7 @@ setup("Login as user", async ({ page, context }) => {
   await header.clickSignInButton();
   await signInForm.fillSignInForm(credentials);
   await signInForm.clickLoginButton();
+  await expect(signInForm.page.getByText("Log out")).toBeVisible();
   await context.storageState({
     path: config.userStatePath,
   });
