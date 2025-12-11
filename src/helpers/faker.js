@@ -32,4 +32,12 @@ export class FakerHelper {
   static getRandomWrongEmail() {
     return faker.helpers.arrayElement(WRONG_EMAILS);
   }
+
+  static generateRandomMileage() {
+    return faker.number.int({ min: 0, max: 200000 });
+  }
+
+  static getRandomArray(array) {
+    return faker.helpers.arrayElement(array);
+  }
 }

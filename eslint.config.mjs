@@ -28,6 +28,7 @@ export default [
       },
     },
     rules: {
+      "no-empty-pattern": ["error", { allowObjectPatternsAsParameters: true }],
       "require-await": "error",
       "no-async-promise-executor": "error",
       "no-promise-executor-return": "error",
