@@ -86,7 +86,7 @@ export class SignUpForm extends BaseComponent {
     });
   }
 
-  async clickSignInButton() {
+  async clickRegisterButton() {
     await test.step("Click Register button", async () => {
       await this.registerButton.click();
     });
