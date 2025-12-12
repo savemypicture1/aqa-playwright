@@ -5,7 +5,7 @@ import {
 import { createdCarResponseSchema } from "#src/models/createCarResponseModel.js";
 import { userCarsResponseSchema } from "#src/models/userCarsResponseModel.js";
 
-testWithCarData.describe.only("Create car", () => {
+testWithCarData.describe("Create car", () => {
   testWithCarData(
     "Should return array with one car after adding one car",
     async ({ apiClient, carData }) => {
