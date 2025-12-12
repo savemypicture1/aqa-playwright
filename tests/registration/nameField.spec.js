@@ -62,7 +62,7 @@ test.describe("Registration form - Name field validation", () => {
     const validLastName = FakerHelper.generateLastName();
     const validName = FakerHelper.generateName();
     const validEmail = FakerHelper.generateEmail();
-    const validPassword = FakerHelper.generateValidPassword();
+    const validPassword = FakerHelper.generatePassword();
 
     await signUpForm.fillSignUpForm({
       name: `  ${validName}  `,
@@ -71,6 +71,10 @@ test.describe("Registration form - Name field validation", () => {
       password: validPassword,
       repeatPassword: validPassword,
     });
-    await signUpForm.isElementNotDisplayed(signUpForm.nameFieldErrorMessage);
+    await signUpForm.checkInputHasError(
+      signUpForm.nameInput,
+      signUpForm.nameFieldErrorMessage,
+      SIGN_UP_TEXT.NAME_INVALID,
+    );
   });
 });
