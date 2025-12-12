@@ -71,8 +71,10 @@ test.describe("Registration form - Last Name field validation", () => {
       password: validPassword,
       repeatPassword: validPassword,
     });
-    await signUpForm.isElementNotDisplayed(
+    await signUpForm.checkInputHasError(
+      signUpForm.lastNameInput,
       signUpForm.lastNameFieldErrorMessage,
+      SIGN_UP_TEXT.LAST_NAME_INVALID,
     );
   });
 });
