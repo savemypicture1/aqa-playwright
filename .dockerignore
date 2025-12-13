@@ -1,0 +1,9 @@
+.git
+.env.example
+.gitignore
+README.md
+.DS_Store
+node_modules/
+test-results/
+playwright-report/
+state/
