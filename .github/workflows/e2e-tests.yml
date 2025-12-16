@@ -9,6 +9,8 @@ jobs:
   playwright-tests:
     runs-on: ubuntu-24.04
     container: mcr.microsoft.com/playwright:v1.57.0-jammy
+    env:
+      HOME: /root
     steps:
       - name: "🔄 Checkout repository"
         uses: actions/checkout@v4
