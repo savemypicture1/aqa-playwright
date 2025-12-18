@@ -1,0 +1,37 @@
+name: "Automated tests with Playwright"
+
+on:
+  workflow_dispatch:
+  pull_request:
+      types: [ opened, synchronize ]
+
+jobs:
+  playwright-tests:
+    runs-on: ubuntu-24.04
+    container: mcr.microsoft.com/playwright:v1.57.0-jammy
+    env:
+      HOME: /root
+    steps:
+      - name: "🔄 Checkout repository"
+        uses: actions/checkout@v4
+      - name: "📥 Install Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: "📦 Install dependencies"
+        run: npm ci --ignore-scripts
+      - name: "▶️ Run tests"
+        run: npm test
+        env:
+          BASE_URL: ${{secrets.BASE_URL}}
+          HTTP_CREDENTIALS_USERNAME: ${{secrets.HTTP_CREDENTIALS_USERNAME}}
+          HTTP_CREDENTIALS_PASSWORD: ${{secrets.HTTP_CREDENTIALS_PASSWORD}}
+          USER_EMAIL: ${{secrets.USER_EMAIL}}
+          USER_PASSWORD: ${{secrets.USER_PASSWORD}}
+      - name: "📊 Upload tests report to artifacts"
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_number }}
+          path: playwright-report/
+          retention-days: 3
